@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini Google – Two-Way Search Engine Ranking</title>
+<style>
+:root{--bg:#fff;--sf:#f8f9fa;--tx:#202124;--mu:#5f6368;--bd:#dadce0;--bl:#1a73e8;--gr:#188038;--rd:#d93025;--gy:#80868b;--gn:#34a853;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#202124;--sf:#2d2e31;--tx:#e8eaed;--mu:#9aa0a6;--bd:#3c4043;--bl:#8ab4f8;--gr:#81c995;--rd:#f28b82;--gy:#9aa0a6;--gn:#81c995}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#202124;--sf:#2d2e31;--tx:#e8eaed;--mu:#9aa0a6;--bd:#3c4043;--bl:#8ab4f8;--gr:#81c995;--rd:#f28b82;--gy:#9aa0a6;--gn:#81c995}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:980px;margin:0 auto;padding:0 16px 48px}
+section{margin-top:36px}
+h2{font-size:20px;font-weight:500;margin:0 0 4px}
+.sub{color:var(--mu);margin:0 0 14px;max-width:70ch}
+.hero{text-align:center;padding:36px 0 8px}
+.logo{font-size:clamp(42px,9vw,68px);font-weight:600;letter-spacing:-2px;margin:0;line-height:1}
+.logo span:nth-child(4n+1){color:#4285f4}.logo span:nth-child(4n+2){color:#ea4335}.logo span:nth-child(4n+3){color:#fbbc04}.logo span:nth-child(4n){color:#34a853}
+.tag{color:var(--mu);margin:8px 0 22px}
+.sbar{display:flex;gap:10px;max-width:620px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.sbar input{flex:1 1 280px;height:46px;border:1px solid var(--bd);border-radius:24px;padding:0 20px;font-size:16px;background:var(--bg);color:var(--tx)}
+.sbar input:hover,.sbar input:focus{box-shadow:0 1px 6px rgba(32,33,36,.28);outline:none}
+button{font:inherit;cursor:pointer}
+.btn{height:46px;padding:0 24px;border:1px solid var(--bd);border-radius:24px;background:var(--sf);color:var(--tx)}
+.btn.p{background:var(--bl);border-color:var(--bl);color:#fff}
+:root[data-theme="dark"] .btn.p{color:#202124}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible{outline:2px solid var(--bl);outline-offset:2px}
+.tabs{display:flex;border-bottom:1px solid var(--bd);margin-top:26px;gap:4px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:12px 18px;color:var(--mu);white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--bl);border-color:var(--bl);font-weight:500}
+.note{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;margin:14px 0;color:var(--mu)}
+.res{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--bd);align-items:flex-start}
+.rk{flex:none;width:36px;height:36px;border-radius:50%;background:var(--bl);color:#fff;display:grid;place-items:center;font-weight:600}
+:root[data-theme="dark"] .rk{color:#202124}
+.body{flex:1;min-width:0}
+.dom{color:var(--bl);font-size:19px}
+.url{color:var(--gr);font-size:13px}
+.snip{color:var(--mu);font-size:14px}
+.met{flex:none;width:130px;text-align:right}
+.met b{font-size:18px;display:block}
+.met small{color:var(--mu)}
+.mbar{height:6px;background:var(--bd);border-radius:3px;margin-top:6px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--bl);border-radius:3px;transition:width .3s}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.res{flex-wrap:wrap}.met{width:100%;text-align:left;margin-left:50px}}
+.card{border:1px solid var(--bd);border-radius:12px;padding:16px;background:var(--bg);overflow-x:auto}
+.card h3{font-size:16px;font-weight:500;margin:0 0 10px}
+.vrow{display:flex;align-items:center;gap:10px;margin:6px 0}
+.vrow label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.vrow input{width:70px;height:34px;border:1px solid var(--bd);border-radius:8px;padding:0 8px;background:var(--bg);color:var(--tx);font-size:15px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--bd)}
+th:first-child,td:first-child{text-align:left}
+.mx th,.mx td{padding:5px 6px}
+.mx input{width:18px;height:18px;accent-color:var(--bl)}
+.chg{font-weight:600;white-space:nowrap}
+.up{color:var(--gr)}.dn{color:var(--rd)}.eq{color:var(--gy)}
+.brow{margin:12px 0}
+.brow .nm{font-size:14px;margin-bottom:3px}
+.bl{display:flex;align-items:center;gap:8px;margin:2px 0;font-size:12px;color:var(--mu)}
+.bl span.t{flex:1;background:var(--sf);border-radius:4px;height:14px;overflow:hidden}
+.bl span.t i{display:block;height:100%;transition:width .3s}
+.bl em{font-style:normal;width:96px;flex:none}
+.o i{background:#fbbc04}.n i{background:#4285f4}
+.key{display:flex;gap:16px;font-size:13px;color:var(--mu);margin-bottom:8px}
+.key b{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+svg{width:100%;height:auto;color:var(--mu)}
+.ex{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+@media(max-width:760px){.ex{grid-template-columns:1fr}}
+.hl{background:var(--sf);border-left:4px solid var(--gn);padding:12px 14px;border-radius:0 10px 10px 0;margin-top:14px}
+.empty{padding:24px 0;color:var(--mu)}
+</style>
+</head>
+<body>
+<main>
+<div class="hero">
+  <h1 class="logo" aria-label="Mini Google"><span>M</span><span>i</span><span>n</span><span>i</span> <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></h1>
+  <p class="tag">Same six websites. Two ways to rank them.</p>
+  <div class="sbar">
+    <input id="q" type="search" placeholder="Search the six sites, e.g. pizza" aria-label="Search query">
+    <button class="btn p" id="go">Search</button>
+    <button class="btn" id="reset">Reset data</button>
+  </div>
+</div>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" id="t-old" aria-selected="true">Old Google ranking</button>
+  <button class="tab" role="tab" id="t-new" aria-selected="false">New Google ranking (PageRank)</button>
+</div>
+<div class="note" id="mode"></div>
+<div id="count" class="sub"></div>
+<div id="results"></div>
+
+<section>
+  <h2>Edit the data</h2>
+  <p class="sub">Votes drive the old ranking. Links between sites drive PageRank. Everything recalculates as you change it.</p>
+  <div class="grid">
+    <div class="card"><h3>Votes (old ranking)</h3><div id="votes"></div></div>
+    <div class="card"><h3>Links (PageRank)</h3>
+      <p class="sub" style="margin-bottom:8px">Tick a box to add a link from the row site to the column site.</p>
+      <table class="mx" id="matrix"></table>
+    </div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <h3>Link graph</h3>
+    <p class="sub" id="gsub" style="margin-bottom:6px"></p>
+    <div id="graph"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Comparison dashboard</h2>
+  <p class="sub">Rank change shows how far each site moves when you switch from votes to PageRank.</p>
+  <div class="grid">
+    <div class="card"><table id="cmp"></table></div>
+    <div class="card">
+      <div class="key"><span><b style="background:#fbbc04"></b>Old: share of votes</span><span><b style="background:#4285f4"></b>New: share of PageRank</span></div>
+      <div id="chart"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>How Google ranking has evolved</h2>
+  <div class="grid">
+    <div class="card"><h3>Old method: count the votes</h3><p style="margin:0">A site with more votes or a higher frequency of mentions ranks higher. It is simple, but easy to game: anyone can pile up votes without earning trust.</p></div>
+    <div class="card"><h3>New method: follow the links</h3><p style="margin:0">A site earns authority from the quality and quantity of links pointing to it. A link from an important page is worth more, and a page that links out to many sites passes on a smaller share to each.</p></div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <h3>Formula used here</h3>
+    <p style="margin:0 0 6px"><code>PR(A) = (1 − d) + d × Σ( PR(T) / C(T) )</code> with d = 0.85. PR(T) is the score of a page T linking to A, and C(T) is how many links T sends out. The scores start at 1 and repeat until they change by less than 0.000001 (or 100 rounds).</p>
+    <div class="ex">
+      <div><b>Page X: 10 votes</b><br><span class="snip">Only a brand-new, unknown page links to it. Old ranking: first.</span></div>
+      <div><b>Page Y: 2 votes</b><br><span class="snip">Three well-linked, respected pages all point to it. PageRank: first.</span></div>
+    </div>
+    <div class="hl" id="live"></div>
+  </div>
+</section>
+</main>
+
+<script>
+const S=[
+["pune-food-guide.com",2,"A local guide to Pune’s best street food, thalis and cafés."],
+["best-pizza-pune.com",13,"Honest reviews of every pizza place in Pune."],
+["college-canteen-blog.com",2,"Students rate canteens and cheap lunches near campus."],
+["pizza-recipes-home.com",1,"Dough, sauce and topping recipes to bake at home."],
+["cheap-eats-pune.com",2,"Budget meals under ₹150 across the city."],
+["pizza-pizza-pizza.com",0,"Pizza pizza pizza pizza pizza pizza pizza."]];
+const L0=[[1,0],[2,0],[3,0],[4,0],[5,1],[0,4],[3,2],[4,2]];
+const A="ABCDEF",n=S.length;
+let votes,links,tab="old",q="";
+const $=id=>document.getElementById(id);
+
+function reset(){votes=S.map(s=>s[1]);links=new Set(L0.map(l=>l.join()));q="";$("q").value="";buildVotes();render()}
+
+// ---------- Algorithm 1: frequency (votes) ----------
+// ---------- Algorithm 2: PageRank ----------
+function pagerank(){
+  const d=.85,out=Array(n).fill(0),pairs=[...links].map(k=>k.split(",").map(Number));
+  pairs.forEach(([t])=>out[t]++);
+  let pr=Array(n).fill(1),it=0,diff;
+  do{
+    const nx=pr.map((_,a)=>{let s=0;pairs.forEach(([t,u])=>{if(u===a)s+=pr[t]/out[t]});return 1-d+d*s});
+    diff=Math.max(...nx.map((v,i)=>Math.abs(v-pr[i])));pr=nx;it++;
+  }while(diff>1e-6&&it<100);
+  return{pr,it,out};
+}
+// Ties share a rank (1,2,2,4); ties are listed alphabetically.
+function rankBy(vals){
+  const order=S.map((_,i)=>i).sort((a,b)=>vals[b]-vals[a]||S[a][0].localeCompare(S[b][0]));
+  const rank=[];order.forEach((i,p)=>{rank[i]=p>0&&vals[order[p-1]]===vals[i]?rank[order[p-1]]:p+1});
+  return{order,rank};
+}
+const inDeg=a=>[...links].filter(k=>+k.split(",")[1]===a).length;
+const short=i=>S[i][0].replace(".com","");
+
+function buildVotes(){
+  $("votes").innerHTML=S.map((s,i)=>`<div class="vrow"><label for="v${i}"><b>${A[i]}</b> ${s[0]}</label><input id="v${i}" type="number" min="0" max="999" value="${votes[i]}"></div>`).join("");
+  S.forEach((_,i)=>$("v"+i).oninput=e=>{votes[i]=Math.max(0,Math.floor(+e.target.value)||0);render()});
+}
+
+function render(){
+  const P=pagerank(),pv=P.pr.map(v=>+v.toFixed(4));
+  const O=rankBy(votes),N=rankBy(pv);
+  const maxV=Math.max(1,...votes),maxP=Math.max(...pv);
+
+  // results
+  const isOld=tab==="old",R=isOld?O:N,terms=q.toLowerCase().split(/\s+/).filter(Boolean);
+  const hits=R.order.filter(i=>terms.every(t=>(S[i][0]+" "+S[i][2]).toLowerCase().includes(t)));
+  $("mode").innerHTML=isOld?"<b>Old ranking:</b> sites are sorted by their vote count. Incoming links are ignored.":"<b>New ranking:</b> sites are sorted by PageRank, calculated from incoming links and the authority of the pages linking in. Votes are ignored. Converged in "+P.it+" iterations.";
+  $("count").textContent=hits.length?`Showing ${hits.length} of ${n} results${q?` for “${q}”`:""}`:"";
+  $("results").innerHTML=hits.length?hits.map(i=>{
+    const val=isOld?votes[i]:pv[i],w=isOld?votes[i]/maxV:pv[i]/maxP,d=inDeg(i);
+    return `<div class="res"><div class="rk" title="Rank">${R.rank[i]}</div><div class="body"><div class="dom">${S[i][0]}</div><div class="url">https://${S[i][0]}</div><div class="snip">${S[i][2]}</div></div>
+    <div class="met"><b>${isOld?val+" votes":val.toFixed(3)}</b><small>${isOld?"vote count":"PageRank · "+d+" incoming link"+(d===1?"":"s")}</small><div class="mbar"><i style="width:${Math.max(2,w*100)}%"></i></div></div></div>`}).join(""):`<div class="empty">No sites match “${q}”. Try “pizza”, “pune” or “cheap”, or clear the search box.</div>`;
+
+  // matrix
+  let m=`<tr><th></th>${[...A].map((c,j)=>`<th title="${S[j][0]}">${c}</th>`).join("")}<th>Out</th></tr>`;
+  S.forEach((s,i)=>{m+=`<tr><td title="${s[0]}"><b>${A[i]}</b> ${short(i)}</td>`+S.map((_,j)=>i===j?"<td>–</td>":`<td><input type="checkbox" aria-label="${A[i]} links to ${A[j]}" ${links.has(i+","+j)?"checked":""} data-k="${i},${j}"></td>`).join("")+`<td>${P.out[i]}</td></tr>`});
+  $("matrix").innerHTML=m;
+  $("matrix").querySelectorAll("input").forEach(c=>c.onchange=()=>{c.checked?links.add(c.dataset.k):links.delete(c.dataset.k);render()});
+
+  // graph
+  const cx=280,cy=190,rad=125,sum=pv.reduce((a,b)=>a+b,0);
+  const pos=S.map((_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return[cx+rad*Math.cos(a),cy+rad*Math.sin(a)]});
+  const rr=S.map((_,i)=>13+60*pv[i]/sum);
+  let g=`<svg viewBox="0 0 560 390" role="img" aria-label="Directed link graph of the six sites"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>`;
+  links.forEach(k=>{const[a,b]=k.split(",").map(Number),[x1,y1]=pos[a],[x2,y2]=pos[b];
+    const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),c=[(x1+x2)/2-dy/L*26,(y1+y2)/2+dx/L*26];
+    const f=(p,r,q)=>{const vx=q[0]-p[0],vy=q[1]-p[1],l=Math.hypot(vx,vy);return[p[0]+vx/l*r,p[1]+vy/l*r]};
+    const s=f(pos[a],rr[a],c),e=f(pos[b],rr[b]+3,c);
+    g+=`<path d="M${s[0]},${s[1]} Q${c[0]},${c[1]} ${e[0]},${e[1]}" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".75" marker-end="url(#ah)"/>`});
+  S.forEach((_,i)=>{const[x,y]=pos[i];
+    g+=`<circle cx="${x}" cy="${y}" r="${rr[i]}" fill="var(--bl)" fill-opacity=".88"><title>${S[i][0]}: PageRank ${pv[i].toFixed(3)}</title></circle><text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" font-weight="600" fill="#fff">${A[i]}</text><text x="${x}" y="${y+rr[i]+13}" text-anchor="middle" font-size="11" fill="currentColor">${short(i)}</text>`});
+  $("graph").innerHTML=g+"</svg>";
+  $("gsub").textContent="Arrows point from the linking site to the site receiving the link. Bigger circles have a higher PageRank.";
+
+  // comparison table
+  $("cmp").innerHTML=`<tr><th>Website</th><th>Old rank</th><th>New rank</th><th>Rank change</th></tr>`+O.order.map(i=>{
+    const c=O.rank[i]-N.rank[i],cls=c>0?"up":c<0?"dn":"eq",t=c>0?`▲ +${c}`:c<0?`▼ ${c}`:"● 0";
+    return `<tr><td>${S[i][0]}</td><td>${O.rank[i]}</td><td>${N.rank[i]}</td><td class="chg ${cls}">${t}</td></tr>`}).join("");
+
+  // bar chart
+  const sv=votes.reduce((a,b)=>a+b,0)||1,so=votes.map(v=>v/sv),sp=pv.map(v=>v/sum),mx=Math.max(...so,...sp);
+  $("chart").innerHTML=O.order.map(i=>`<div class="brow"><div class="nm">${S[i][0]}</div>
+    <div class="bl o"><span class="t"><i style="width:${so[i]/mx*100}%"></i></span><em>#${O.rank[i]} · ${votes[i]} votes</em></div>
+    <div class="bl n"><span class="t"><i style="width:${sp[i]/mx*100}%"></i></span><em>#${N.rank[i]} · ${pv[i].toFixed(2)} PR</em></div></div>`).join("");
+
+  // live example
+  const best=S.map((_,i)=>i).sort((a,b)=>(O.rank[b]-N.rank[b])-(O.rank[a]-N.rank[a]))[0],gain=O.rank[best]-N.rank[best];
+  $("live").innerHTML=gain>0?`<b>In your data:</b> ${S[best][0]} has only ${votes[best]} vote${votes[best]===1?"":"s"} (rank ${O.rank[best]} by votes) but ${inDeg(best)} incoming link${inDeg(best)===1?"":"s"} lift it to rank ${N.rank[best]} under PageRank.`:`<b>In your data:</b> no site ranks higher under PageRank than by votes. Add links to a low-vote site to see it climb.`;
+}
+
+$("go").onclick=()=>{q=$("q").value.trim();render()};
+$("q").onkeydown=e=>{if(e.key==="Enter")$("go").click()};
+$("reset").onclick=reset;
+["old","new"].forEach(t=>$("t-"+t).onclick=()=>{tab=t;["old","new"].forEach(x=>$("t-"+x).setAttribute("aria-selected",x===t));render()});
+reset();
+</script>
+</body>
+</html>
